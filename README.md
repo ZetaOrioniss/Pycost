@@ -1,121 +1,141 @@
+# Costs CLI
 
-# Pycost 💸
+A small command-line tool to **track and view your expenses** using a simple JSON file.
 
-Pycost est un petit outil en ligne de commande pour gérer simplement les dépenses d’un business ou d’un projet personnel.
-
-Les dépenses sont saisies en **une seule commande**, stockées dans un **fichier JSON**, et versionnées avec **Git** pour garder un historique fiable.
-
----
-
-## Fonctionnalités
-
-- Ajouter une dépense depuis le terminal
-  - montant
-  - article
-  - date (format `jj/mm/aaaa`)
-- Stockage des données dans un fichier `costs.json`
-- Historique des modifications grâce à Git
-- Afficher les dépenses :
-  - entre deux dates
-  - tri croissant ou décroissant
+The goal of this script is to stay **lightweight and easy to use**, with **no external dependencies**. All expenses are stored locally in a `costs.json` file.
 
 ---
 
-## Prérequis
+## Features
 
-- Python 3.8 ou plus
-- Git installé sur la machine
-
-Vérification :
-```bash
-python --version
-git --version
-````
+* Add a new expense
+* List recorded expenses
+* Sort expenses by date
+* Store everything locally in a JSON file
+* Possibility of using git to keep a history 
 
 ---
 
 ## Installation
 
-### Cloner le dépôt
+Clone the repository or simply copy the script:
 
 ```bash
-git clone https://github.com/TON_UTILISATEUR/pycost.git
-cd pycost
+git clone <repo>
+cd <repo>
+```
+
+Make the script executable:
+
+```bash
+chmod +x main.py
+```
+
+Then run it with:
+
+```bash
+./main.py
+```
+
+or
+
+```bash
+python3 main.py
 ```
 
 ---
 
-## Utilisation (concept)
+## Usage
 
-### Ajouter une dépense
+The program works with **commands** (`add`, `list`).
 
-Une dépense se saisit en **une seule commande** :
+### Add an expense
 
 ```bash
-pycost 32 "café client" 01/02/2024
+./main.py add -p 10 -d 2026-03-10 -a pizza
 ```
 
-### Afficher les dépenses entre deux dates
+Arguments:
+
+* `-p`, `--price` : price of the item
+* `-d`, `--date` : date in `YYYY-MM-DD` format
+* `-a`, `--article` : name of the item
+
+Example:
 
 ```bash
-pycost list 01/01/2024 31/01/2024 --asc
-```
-
-ou
-
-```bash
-pycost list 01/01/2024 31/01/2024 --desc
+./main.py add -p 4.5 -d 2026-03-10 -a coffee
 ```
 
 ---
 
-## Format des données
+### List expenses
 
-Les dépenses sont stockées dans `costs.json` sous la forme :
+```bash
+./main.py list
+```
+
+Example output:
+
+```
+1. 2026-03-10 | coffee | 4.5€
+2. 2026-03-10 | pizza | 10€
+```
+
+---
+
+### Sort expenses
+
+By default, expenses are displayed **from oldest to newest**.
+
+You can reverse the order:
+
+```bash
+./main.py list -o desc
+```
+
+Available options:
+
+* `asc` → oldest → newest
+* `desc` → newest → oldest
+
+---
+
+## Data structure
+
+Expenses are stored in `costs.json` like this:
 
 ```json
-{
-  "costs": [
+[
     {
-      "price": 7.50,
-      "date": "01/02/2024",
-      "article": "café"
+        "price": 10.0,
+        "date": "2026-03-10",
+        "article": "pizza"
     }
-  ]
-}
+]
 ```
 
 ---
 
-## Versionnement avec Git
+## Notes
 
-Chaque modification peut être sauvegardée :
-
-```bash
-git add costs.json
-git commit -m "Ajout dépense : café client"
-```
-
-Git permet ainsi :
-
-* de garder un historique complet
-* d’annuler une erreur
-* d’auditer les dépenses dans le temps
+* If `costs.json` does not exist, it will be created automatically.
+* If the file is empty or corrupted, the program will simply start with an empty list.
 
 ---
 
-## Roadmap (idées futures)
+## Possible improvements
 
-* Catégories de dépenses
-* Export CSV
-* Total par période
-* Recherche par mot-clé
-* Validation stricte des entrées utilisateur
+Some ideas to extend the project:
+
+* Add a **total expenses** command
+* Filter by **date**
+* Delete an expense
+* Add **categories**
+* Export data (for example to CSV)
 
 ---
 
-## Licence
+## License
 
-Projet personnel / open-source.
-Libre d’utilisation et de modification.
-
+Free to use and modify.
