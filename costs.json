@@ -1,9 +1,17 @@
-{
-
-"costs" : [  
-
-    {"price": "300", "date": "10/02/2004", "article": "cpu"},
-    {"price": "7.50", "date": "12/02/2004", "article": "coffee"},
-    
-    ]
-}
+[
+    {
+        "price": "350",
+        "date": "01/01/2026",
+        "article": "ordi"
+    },
+    {
+        "price": "3.99",
+        "date": "23/05/2026",
+        "article": "test"
+    },
+    {
+        "price": "2.79",
+        "date": "05/02/2026",
+        "article": "muffin"
+    }
+]

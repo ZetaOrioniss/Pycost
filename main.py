@@ -1,84 +1,83 @@
-#! /usr/bin/python3
-#! coding: utf-8
+#!/usr/bin/env python3
+# coding: utf-8
 
-import sys
 import json
+import os
+import argparse
 
-json_base = """
-
-{
-
-  "cost" : [
-    {
-
-      "price" : {},
-      "date" : "{}",
-      "article" : "{}"
-      
-    }
-  ]
-  
-}
+FILE_NAME = "costs.json"
 
 
-"""
-
-def isFileExist():
+def load_json():
+    """Charge le JSON ou retourne une liste vide."""
+    if not os.path.exists(FILE_NAME):
+        return []
 
     try:
-        json_file = open("costs.json", "r")
-        print(json_file.read()); json_file.close()
-
-    except FileNotFoundError:
-        return False
-
-def FileCreate():
-
-    try:
-        json_file = open("costs.json", "x"); json_file.close()
-
-    except:
-
-        return 1
-
-def FileAppend(c_price, c_date, c_article):
-
-    json_append = {
-        "price": c_price,
-        "date": c_date,
-        "article": c_article
-    }
-
-    try:
-        with open("costs.json", "a", encoding="utf-8") as json_file:
-            print("opened")
-            json_file.write(json.dumps(json_append, ensure_ascii=False) + ",\n")
-
-    except Exception as e:
-        print("Erreur :", e)
+        with open(FILE_NAME, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, ValueError):
+        return []
 
 
+def save_json(data):
+    """Sauvegarde les données."""
+    with open(FILE_NAME, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 
-def main(option, price, date, article):
-    
-    if isFileExist() == False:
-        FileCreate()
+def add_cost(price, date, article):
+    data = load_json()
 
-    if option == "add":
+    data.append({
+        "price": price,
+        "date": date,
+        "article": article
+    })
 
-        FileAppend(price, date, article)
+    save_json(data)
+    print("✔ Dépense ajoutée.")
 
+
+def list_costs():
+    data = load_json()
+
+    if not data:
+        print("Aucune dépense enregistrée.")
+        return
+
+    for i, item in enumerate(data, 1):
+        print(f"{i}. {item['date']} | {item['article']} | {item['price']}€")
+
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        description="Gestion simple de dépenses en JSON"
+    )
+
+    subparsers = parser.add_subparsers(dest="command")
+
+    # commande add
+    add_parser = subparsers.add_parser("add", help="Ajouter une dépense")
+    add_parser.add_argument("-p", "--price", required=True, help="Prix")
+    add_parser.add_argument("-d", "--date", required=True, help="Date (YYYY-MM-DD)")
+    add_parser.add_argument("-a", "--article", required=True, help="Nom de l'article")
+
+    # commande list
+    subparsers.add_parser("list", help="Lister les dépenses")
+
+    args = parser.parse_args()
+
+    if args.command == "add":
+        add_cost(args.price, args.date, args.article)
+
+    elif args.command == "list":
+        list_costs()
+
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
-
-    option = sys.argv[1]
-    price = sys.argv[2]
-    date = sys.argv[3]
-    article = sys.argv[4]
-
-    print(option)
-
-
-    main(option, price, date, article)
+    main()
